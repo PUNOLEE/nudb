@@ -144,7 +144,7 @@ app.get("/enroll", (req, res) => {
 
 app.get("/withdraw", (req, res) => {
   const { studentID, code, semester, year } = req.query;
-  const WITHDRAW = `call withdraw(?,?,?,?,@MESSAGE);select @MESSAGE;`;
+  const WITHDRAW = `call withdraw(?,?,?,?,@MESSAGE);SELECT @MESSAGE,(select @warning from temp_mess) AS w;`;
   connection.query(
     WITHDRAW,
     [Number(studentID), code, semester, Number(year)],

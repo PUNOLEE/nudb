@@ -18,14 +18,16 @@
 .header{
   margin:10px 15px;
 }
-.page-header{
-  display: flex;
-  justify-content: space-around;
-  height: 40px;
-  padding:10px;
+.page{
   position: sticky;
   top: 0;
   height: fit-content;
   z-index: 1;
   background-color: white;
+}
+.page-header{
+  display: flex;
+  justify-content: space-around;
+  height: 40px;
+  padding:10px;
 }

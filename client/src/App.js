@@ -276,7 +276,18 @@ function Enroll(props) {
         )
         .then(function(response) {
           // handle success
-          setMessage(response.data.data[1][0]["@MESSAGE"]);
+          const mess = response.data.data[1][0]["@MESSAGE"];
+          setMessage(mess);
+          if (mess === "Success!") {
+            setCourses(
+              courses.filter(
+                ({ UoSCode, Year, Semester }) =>
+                  checked.UoSCode !== UoSCode ||
+                  checked.Year !== Year ||
+                  checked.Semester !== Semester
+              )
+            );
+          }
         })
         .catch(function(error) {
           // handle error
@@ -286,22 +297,24 @@ function Enroll(props) {
   };
   return (
     <div>
-      <div className="page-header">
-        <Typography variant="h6" className={classes.inline}>
-          Enroll a class
+      <div className="page">
+        <div className="page-header">
+          <Typography variant="h6" className={classes.inline}>
+            Enroll a class
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            onClick={() => enroll()}
+          >
+            Confirm
+          </Button>
+        </div>
+        <Typography variant="caption" color="secondary">
+          {message}
         </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          className={classes.button}
-          onClick={() => enroll()}
-        >
-          Confirm
-        </Button>
       </div>
-      <Typography variant="caption" color="secondary">
-        {message}
-      </Typography>
       <List className={classes.paperRoot}>
         {courses.length !== 0
           ? courses.map(
@@ -363,7 +376,7 @@ function Withdraw(props) {
   const [courses, setCourses] = useState([]);
   const [message, setMessage] = useState("");
   const [checked, setChecked] = useState({});
-
+  const [warning, setWarning] = useState("");
   useEffect(() => {
     axios
       .get(
@@ -389,7 +402,23 @@ function Withdraw(props) {
         )
         .then(function(response) {
           // handle success
-          setMessage(response.data.data[1][0]["@MESSAGE"]);
+          const mess = response.data.data[1][0]["@MESSAGE"];
+          setMessage(mess);
+          setWarning(
+            response.data.data[1][0]["w"] === 1
+              ? "Enrollment number goes below 50% of the Max Enrollment"
+              : ""
+          );
+          if (mess === "Success!") {
+            setCourses(
+              courses.filter(
+                ({ UoSCode, Year, Semester }) =>
+                  checked.UoSCode !== UoSCode ||
+                  checked.Year !== Year ||
+                  checked.Semester !== Semester
+              )
+            );
+          }
         })
         .catch(function(error) {
           // handle error
@@ -400,22 +429,33 @@ function Withdraw(props) {
 
   return (
     <div className="withdraw">
-      <div className="page-header">
-        <Typography variant="h6" className={classes.inline}>
-          Withdraw a class
+      <div className="page">
+        <div className="page-header">
+          <Typography variant="h6" className={classes.inline}>
+            Withdraw a class
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            onClick={() => withdraw()}
+          >
+            Confirm
+          </Button>
+        </div>
+        <Typography variant="caption" color="secondary">
+          {message}{" "}
         </Typography>
-        <Button variant="contained" color="primary" className={classes.button} onClick={() => withdraw()}>
-          Confirm
-        </Button>
+        <Typography variant="caption" color="secondary">
+          {warning}
+        </Typography>
       </div>
-      <Typography variant="caption" color="secondary">
-        {message}
-      </Typography>
+
       <List className={classes.paperRoot}>
         {courses.length !== 0
           ? courses.map(({ UoSCode, UoSName, Semester, Year }) => (
               <ListItem
-                key={UoSCode}
+                key={`${UoSCode}-${Year}-${Semester}`}
                 dense
                 button
                 onClick={() => {
@@ -427,7 +467,8 @@ function Withdraw(props) {
                       Year,
                       Semester
                     });
-                  }}}
+                  }
+                }}
               >
                 <ListItemIcon>
                   <Checkbox
@@ -444,7 +485,9 @@ function Withdraw(props) {
                     }}
                   />
                 </ListItemIcon>
-                <ListItemText primary={`${UoSCode} ${UoSName}, ${Year},${Semester}`} />
+                <ListItemText
+                  primary={`${UoSCode} ${UoSName}, ${Year},${Semester}`}
+                />
               </ListItem>
             ))
           : null}
