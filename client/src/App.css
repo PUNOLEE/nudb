@@ -30,4 +30,5 @@
   justify-content: space-around;
   height: 40px;
   padding:10px;
+  min-width:400px;
 }

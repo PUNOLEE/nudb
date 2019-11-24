@@ -118,8 +118,15 @@ app.get("/currentCourses", (req, res) => {
 });
 
 app.get("/unfinishedCourses", (req, res) => {
-  const { studentID } = req.query;
-  const SELECT_CURRENT_ENROLL_COURSES = `select * from transcript natural join unitofstudy where StudId=${studentID} AND Grade is null`;
+  const { studentID, semester, year } = req.query;
+  let SELECT_CURRENT_ENROLL_COURSES = `select * from transcript natural join unitofstudy where StudId=${studentID} AND Grade is null`;
+  if (semester === "Q1") {
+    SELECT_CURRENT_ENROLL_COURSES += ` and Semester>='${semester}' and Year>=${year}`;
+  } else {
+    SELECT_CURRENT_ENROLL_COURSES += ` and ((Semester='${semester}' and Year=${year}) or (Year=${Number(
+      year
+    ) + 1} and Semester>='Q1'))`;
+  }
   connection.query(SELECT_CURRENT_ENROLL_COURSES, (err, results) => {
     if (err) {
       return res.send(err);

@@ -129,7 +129,7 @@ function MyMenu(props) {
   const { location } = props;
   const id = location.state.id;
   const year = moment().year();
-  const semester = moment([Number(moment().year()), 9, 1]).isBefore(moment())
+  const semester = moment([Number(moment().year()), 7, 1]).isBefore(moment())
     ? "Q2"
     : "Q1";
   return (
@@ -380,11 +380,15 @@ function Withdraw(props) {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:4000/unfinishedCourses?studentID=${location.state.id}`
+        `http://localhost:4000/unfinishedCourses?studentID=${location.state.id}&year=${location.state.year}&semester=${location.state.semester}`
       )
       .then(function(response) {
         // handle success
+        // console.log(response)
         setCourses(response.data.data);
+        if(response.data.data.length===0){
+          setMessage("You don't have classes to withdraw!");
+        }
       })
       .catch(function(error) {
         // handle error
