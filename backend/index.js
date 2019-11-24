@@ -26,7 +26,7 @@ app.get("/", (req, res) => {
 });
 app.get("/signin", (req, res) => {
   const { studentID, password } = req.query;
-  const SELECT_CURRENT_STUDENT = `select * from student where Id=${studentID} and Password='${password}'`;
+  const SELECT_CURRENT_STUDENT = `select * from student where Id=${studentID}`;
   connection.query(SELECT_CURRENT_STUDENT, (err, results) => {
     if (err) {
       return res.send({
@@ -35,14 +35,21 @@ app.get("/signin", (req, res) => {
       });
     } else {
       if (results.length > 0) {
-        return res.send({
-          code: 200,
-          success: "login sucessfully!"
-        });
+        if (results[0].Password === password) {
+          return res.send({
+            code: 200,
+            success: "Login sucessfully!"
+          });
+        } else {
+          return res.send({
+            code: 201,
+            success: "Wrong password!"
+          });
+        }
       } else {
         return res.send({
           code: 204,
-          success: "Id and password does not match!"
+          success: "Id does not exist!"
         });
       }
     }
