@@ -21,6 +21,10 @@ npm install
 npm start
 ```
 ## 2. NodeJS Back-End Service
+### enter project folder
+```
+cd backend
+```
 ### install dependencies:
 ```
 npm install
