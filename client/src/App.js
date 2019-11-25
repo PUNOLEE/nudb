@@ -7,6 +7,10 @@ import MenuItem from "@material-ui/core/MenuItem";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Paper from "@material-ui/core/Paper";
+import ExpansionPanel from "@material-ui/core/ExpansionPanel";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+import ExpandMore from "@material-ui/icons/ExpandMore";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -29,7 +33,7 @@ const useStyles = makeStyles(theme => ({
   },
   paperRoot: {
     width: "100%",
-    maxWidth: 500,
+    maxWidth: 600,
     minWidth: 200,
     backgroundColor: theme.palette.background.paper
   },
@@ -38,7 +42,10 @@ const useStyles = makeStyles(theme => ({
   },
   inline: {
     display: "inline"
-  }
+  },
+  flex:{
+    textAlign:"left",
+  },
 }));
 
 function App() {
@@ -184,6 +191,14 @@ function Transcript(props) {
   const classes = useStyles();
   const { location } = props;
   const [transcript, setTranscript] = useState([]);
+  const [open, setOpen] = useState(false);
+
+  const handleClick = i => {
+    open[i] = !open[i];
+    console.log(open);
+    setOpen(open);
+  };
+
   useEffect(() => {
     axios
       .get(`http://localhost:4000/courses?studentID=${location.state.id}`)
@@ -200,42 +215,52 @@ function Transcript(props) {
     <List className={classes.paperRoot}>
       {transcript.length !== 0
         ? transcript.map(
-            ({
-              UoSCode,
-              UoSName,
-              Year,
-              Semester,
-              Enrollment,
-              MaxEnrollment,
-              Name,
-              Grade
-            }) => {
+            (
+              {
+                UoSCode,
+                UoSName,
+                Year,
+                Semester,
+                Enrollment,
+                MaxEnrollment,
+                Name,
+                Grade
+              },
+              i
+            ) => {
               return (
-                <ListItem alignItems="flex-start" key={UoSCode}>
-                  <ListItemText
-                    primary={`${UoSCode} ${UoSName} , ${Year} , ${Semester}`}
-                    secondary={
-                      <React.Fragment>
-                        <Typography
-                          component="span"
-                          variant="body2"
-                          color="textPrimary"
-                        >
-                          {`Instructor Name: ${Name}`}
-                        </Typography>
-                        {`  Grade - ${Grade}`}
-                        <Typography
-                          component="span"
-                          variant="body2"
-                          className={classes.block}
-                          color="textPrimary"
-                        >
-                          {` Enrollment: ${Enrollment} / ${MaxEnrollment}`}
-                        </Typography>
-                      </React.Fragment>
-                    }
-                  />
-                </ListItem>
+                <div key={i} className={classes.width}>
+                  <ExpansionPanel>
+                    <ExpansionPanelSummary
+                      expandIcon={<ExpandMore />}
+                      aria-label="Expand"
+                      aria-controls="additional-actions2-content"
+                      id="additional-actions2-header"
+                    >
+                      <div className={classes.flex}>
+                      <Typography variant="body1">{`${UoSCode} ${UoSName} , ${Year} , ${Semester}, Grade - ${Grade}`}</Typography>
+                      </div>
+                      
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        color="textPrimary"
+                      >
+                        {`Instructor Name: ${Name}, `}
+                      </Typography>
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        className={classes.block}
+                        color="textPrimary"
+                      >
+                        {` Enrollment: ${Enrollment} / ${MaxEnrollment}`}
+                      </Typography>
+                    </ExpansionPanelDetails>
+                  </ExpansionPanel>
+                </div>
               );
             }
           )
@@ -386,7 +411,7 @@ function Withdraw(props) {
         // handle success
         // console.log(response)
         setCourses(response.data.data);
-        if(response.data.data.length===0){
+        if (response.data.data.length === 0) {
           setMessage("You don't have classes to withdraw!");
         }
       })
