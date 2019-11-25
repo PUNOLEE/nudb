@@ -191,13 +191,6 @@ function Transcript(props) {
   const classes = useStyles();
   const { location } = props;
   const [transcript, setTranscript] = useState([]);
-  const [open, setOpen] = useState(false);
-
-  const handleClick = i => {
-    open[i] = !open[i];
-    console.log(open);
-    setOpen(open);
-  };
 
   useEffect(() => {
     axios
