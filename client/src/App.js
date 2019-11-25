@@ -43,9 +43,9 @@ const useStyles = makeStyles(theme => ({
   inline: {
     display: "inline"
   },
-  flex:{
-    textAlign:"left",
-  },
+  flex: {
+    textAlign: "left"
+  }
 }));
 
 function App() {
@@ -231,9 +231,8 @@ function Transcript(props) {
                       id="additional-actions2-header"
                     >
                       <div className={classes.flex}>
-                      <Typography variant="body1">{`${UoSCode} ${UoSName} , ${Year} , ${Semester}, Grade - ${Grade}`}</Typography>
+                        <Typography variant="body1">{`${UoSCode} ${UoSName}, Grade - ${Grade}`}</Typography>
                       </div>
-                      
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                       <Typography
@@ -242,6 +241,13 @@ function Transcript(props) {
                         color="textPrimary"
                       >
                         {`Instructor Name: ${Name}, `}
+                      </Typography>
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        color="textPrimary"
+                      >
+                        {`${Year}, ${Semester}, `}
                       </Typography>
                       <Typography
                         component="span"
